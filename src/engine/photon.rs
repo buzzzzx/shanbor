@@ -72,7 +72,7 @@ impl SpecTransform<&Flipv> for Photon {
 }
 
 impl SpecTransform<&Fliph> for Photon {
-    fn transform(&mut self, op: &Fliph) {
+    fn transform(&mut self, _op: &Fliph) {
         transform::fliph(&mut self.0);
     }
 }
@@ -81,7 +81,8 @@ impl SpecTransform<&Filter> for Photon {
     fn transform(&mut self, op: &Filter) {
         match filter::Filter::from_i32(op.filter) {
             Some(filter::Filter::Unspecified) => {},
-            Some(f) => filters::filter(&mut self.0, f.to_str().unwrap()),
+            // Some(f) => filters::filter(&mut self.0, f.to_str().unwrap()),
+            Some(_f) => filters::filter(&mut self.0, "marine"),
             _ => {},
         };
     }
@@ -91,7 +92,7 @@ impl SpecTransform<&Resize> for Photon {
     fn transform(&mut self, op: &Resize) {
         let img = match resize::ResizeType::from_i32(op.rtype).unwrap() {
             resize::ResizeType::Normal => transform::resize(
-                &mut self.0,
+                &self.0,
                 op.width, 
                 op.height,
                 resize::SampleFilter::from_i32(op.filter).unwrap().into(),
@@ -115,7 +116,7 @@ fn image_to_buf(img: PhotonImage, format: ImageOutputFormat) -> Vec<u8> {
     let height = img.get_height();
 
     let img_buffer = ImageBuffer::from_vec(width, height, raw_pixels).unwrap();
-    let dynimage = DynamicImage::ImageRgb8(img_buffer);
+    let dynimage = DynamicImage::ImageRgba8(img_buffer);
 
     let mut buffer = Vec::with_capacity(32768);
     dynimage.write_to(&mut buffer, format).unwrap();

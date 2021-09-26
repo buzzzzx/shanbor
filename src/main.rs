@@ -52,7 +52,8 @@ async fn main() {
     let addr = "127.0.0.1:3000".parse().unwrap();
     
     // 辅助调试
-    print_test_url("https://images.pexels.com/photos/1562477/pexels-photo-1562477.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260");
+    print_test_url("https://p8.pstatp.com/origin/pgc-image/e80c318c4b84494abd47302647f4b6e3.jpeg");
+    // print_test_url("https://images.pexels.com/photos/1562477/pexels-photo-1562477.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260");
 
     info!("Listening on {}", addr);
 
