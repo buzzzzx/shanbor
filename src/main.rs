@@ -15,10 +15,13 @@ use tokio::sync::Mutex;
 use tower::ServiceBuilder;
 use tracing::{info, instrument};
 
-// 声明 pb 模块，Rust 根据名字去加载该模块内容
+// 声明 pb, engine 模块，Rust 根据名字去加载该模块内容
 mod pb;
+mod engine;
 
 use pb::*;
+use engine::{Engine, Photon};
+use image::ImageOutputFormat;
 
 // 参数使用 serde 做 Deserialize，axum 会自动识别并解析
  #[derive(Deserialize)]
@@ -75,12 +78,21 @@ async fn generate(
         .await
         .map_err(|_| StatusCode::BAD_REQUEST)?;
 
-    // TODO: 根据图片指令处理图片
+    // 根据图片指令处理图片
+    // 使用 image engine 处理
+    let mut engine: Photon = data
+        .try_into()
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    engine.apply(&spec.specs);
+
+    let image = engine.generate(ImageOutputFormat::Jpeg(85));
+
+    info!("Finished processing: image size {}", image.len());
 
     let mut headers = HeaderMap::new();
     headers.insert("content-type", HeaderValue::from_static("image/jpeg"));
 
-    Ok((headers, data.to_vec()))
+    Ok((headers, image))
 }
 
 #[instrument(level = "info", skip(cache))]
