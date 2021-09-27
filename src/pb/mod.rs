@@ -29,6 +29,18 @@ impl TryFrom<&str> for ImageSpec {
     }
 }
 
+// 辅助函数，为 Filter enum 实现 to_str 方法
+impl filter::Filter {
+    pub fn to_str(&self) -> Option<&'static str> {
+        match self {
+            filter::Filter::Unspecified => None,
+            filter::Filter::Oceanic => Some("oceanic"),
+            filter::Filter::Marine => Some("marine"),
+            filter::Filter::Islands => Some("islands"),
+        }
+    }
+}
+
 // 在我们定义的 SampleFilter 和 photon_rs 的 SamplingFilter 间转换
 impl From<resize::SampleFilter> for SamplingFilter {
     fn from(v: resize::SampleFilter) -> Self {
