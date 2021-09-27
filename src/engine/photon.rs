@@ -82,7 +82,10 @@ impl SpecTransform<&Filter> for Photon {
         match filter::Filter::from_i32(op.filter) {
             Some(filter::Filter::Unspecified) => {},
             // Some(f) => filters::filter(&mut self.0, f.to_str().unwrap()),
-            Some(_f) => filters::filter(&mut self.0, "marine"),
+            // Some(_f) => filters::filter(&mut self.0, "marine"),
+            Some(filter::Filter::Marine) => filters::filter(&mut self.0, "marine"),
+            Some(filter::Filter::Islands) => filters::filter(&mut self.0, "islands"),
+            Some(filter::Filter::Oceanic) => filters::filter(&mut self.0, "oceanic"),
             _ => {},
         };
     }
